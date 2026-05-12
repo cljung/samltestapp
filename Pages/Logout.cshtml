@@ -1,0 +1,14 @@
+﻿@page
+@model LogoutModel
+@{
+    ViewData["Title"] = "Logout";
+}
+<div class="container">
+    <div class="jumbotron">
+        <h1>Logout</h1>
+    </div>
+    <a class="btn btn-link" data-toggle="collapse" href="#rawSAMLRequest" role="link" aria-expanded="false" aria-controls="rawSAML">Show raw SAMLRequest</a>
+    <p class="collapse" id="rawSAMLRequest" name="rawSAMLRequest" rows="20" cols="200">
+        @Model.SAMLLogoutRequest
+    </p>
+</div> 

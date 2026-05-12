@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Description>A simple DotNet Core2 SAML Identity / Service Provider for B2C Training or Testing purposes only</Description>
+    <PackageTags>SAML</PackageTags>
+    <RepositoryUrl>https://github.com/</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <UserSecretsId>39ec726f-b878-4431-bb2a-c02b66a55583</UserSecretsId>
+  </PropertyGroup>
+</Project>

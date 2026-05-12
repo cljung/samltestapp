@@ -1,0 +1,45 @@
+﻿@page
+@model SAMLTest.Pages.SP.AssertionConsumerModel
+@{
+    ViewData["Title"] = "Assertion Consumer";
+    Layout = "~/Pages/_Layout.cshtml";
+}
+
+<h2 id="success">SAML Login Success</h2>
+
+<div>
+    <table id="t01" class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Attribute</th>
+                <th scope="col">Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (KeyValuePair<string, string> element in Model.attrsandvals)
+            {
+                <tr>
+                    <td>
+                        @element.Key
+                    </td>
+                    <td>
+                        @Html.Raw(element.Value?.Replace(", ", "<br/>"))
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+<a class="btn btn-link" data-toggle="collapse" href="#rawSAMLRequest" role="link" aria-expanded="false" aria-controls="rawSAML">Show raw SAMLRequest</a>
+<p class="collapse" id="rawSAMLRequest" name="rawSAMLRequest" rows="20" cols="200">
+    @Model.SAMLRequest
+</p>
+<a class="btn btn-link" data-toggle="collapse" href="#rawSAMLResponse" role="link" aria-expanded="false" aria-controls="rawSAML">Show raw SAMLResponse</a>
+<p class="collapse" id="rawSAMLResponse" name="rawSAMLResponse" rows="20" cols="200">
+    @Model.SAMLResponse
+</p>
+<p>
+<a class="btn btn-primary LogoutBtn" name="LogoutBtn" href="/Logout?Issuer=@Model.Issuer&SessionId=@Model.SessionId&NameId=@Model.NameId&EntityID=@Model.EntityID" role="link">Logout</a>
+</p>

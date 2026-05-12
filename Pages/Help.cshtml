@@ -1,0 +1,32 @@
+﻿
+@page
+@model HelpModel
+@{
+    ViewData["Title"] = "Help page";
+}
+<div class="container">
+        <div class="jumbotron">
+        <h1>SAML Test Service</h1>
+        <p>
+            To configure this app in Entra ID, you need to perform the following steps:
+            <ol>
+              <li>Goto Entra ID > Enterprise apps > +New application > +Create your own application</li>
+              <li>Enter a name, like <i>SAMLTestApp</i> and select <i>Integrate any other application</i></li>
+              <li>Select Single sign-on</li>
+              <li>Select Edit for the <i>Basic SAML Configuration</i></li>
+              <li>Enter '@Model.EntityID' for the <i>Identifier (Entity ID)</i></li>
+              <li>Enter '@Model.ServerName/SP/AssertionConsumer' for the <i>Reply URL (Assertion Consumer Service URL)</i></li>
+              <li>Click Save</li>
+            </ol>
+            <br/>
+            To test:
+            <ol>
+              <li>Scroll down and copy the <i>App Federation Metadata Url</i> link</li>
+              <li>Open <a href="@Model.ServerName/SP/" target="_blank">@Model.ServerName/SP/</a> in the browser</li>
+              <li>Paste in the metadata URL</li>
+              <li>Paste in '@Model.EntityID' as the Issuer</li>
+              <li>Click Login</li>
+            </ol>
+        </p>
+    </div>
+</div> 

@@ -1,0 +1,40 @@
+﻿@page
+@model SAMLTest.Pages.SP.IndexModel
+@{
+    ViewData["Title"] = "SP Initiated SSO";
+    Layout = "~/Pages/_Layout.cshtml";
+}
+
+<h2>SP Initiated SSO</h2>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+
+        @Html.LabelFor(m => m.MetadataURL)
+        @Html.TextBoxFor(m => m.MetadataURL, htmlAttributes: new { @class = "form-control", @placeholder = "SAML IDP metadata URL" })
+        <small id="emailHelp" class="form-text text-muted">The URL to the metadata for the SAML Identity Provider. SingleLogoutService in the metadata is the sign-in endpoint.</small>
+        <div class="text-danger">@Html.ValidationMessageFor(m => m.MetadataURL)</div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Issuer)
+        @Html.TextBoxFor(m => m.Issuer, htmlAttributes: new { @class = "form-control", @placeholder = "Enter Issue for the request. this is identifier Uri which uniquely identifies application" })
+        <small id="emailHelp" class="form-text text-muted">Enter issuer for the request. This is identifier Uri which uniquely identifies application. It must be registered with the application on the IDP.</small>
+        <div class="text-danger">@Html.ValidationMessageFor(m => m.Issuer)</div>
+    </div>
+
+    <p>
+        If you specify this app's SAML metadata endpoint, the app will provide a mock signin screen so you can test the flow.
+    </p>
+    <input id="Button1" type="submit" value="Login" class="btn btn-primary" />
+}
+
+
+
