@@ -12,10 +12,11 @@
             <ol>
               <li>Goto Entra ID > Enterprise apps > +New application > +Create your own application</li>
               <li>Enter a name, like <i>SAMLTestApp</i> and select <i>Integrate any other application</i></li>
-              <li>Select Single sign-on</li>
+              <li>Select Single sign-on and then SAML</li>
               <li>Select Edit for the <i>Basic SAML Configuration</i></li>
               <li>Enter '@Model.EntityID' for the <i>Identifier (Entity ID)</i></li>
               <li>Enter '@Model.ServerName/SP/AssertionConsumer' for the <i>Reply URL (Assertion Consumer Service URL)</i></li>
+              <li>Enter '@Model.ServerName/Logout' for the <i>Logout URL (Optional)</i></li>
               <li>Click Save</li>
             </ol>
             <br/>

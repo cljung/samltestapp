@@ -10,12 +10,12 @@ The [Help](https://samltestapp.azurewebsites.net/Help) page describes how you re
 
 1. Goto Entra ID > Enterprise apps > +New application > +Create your own application
 1. Enter a name, like SAMLTestApp and select Integrate any other application
-1. Select Single sign-on
+1. Select Single sign-on and select SAML
 1. Select Edit for the Basic SAML Configuration
 1. Enter '748f981c36434853ae702032edae49e0' for the Identifier (Entity ID). This value comes from [appsettings.json](appsettings.json).
 1. Enter 'https://samltestapp.azurewebsites.net/SP/AssertionConsumer' for the Reply URL (Assertion Consumer Service URL)
+1. Enter 'https://samltestapp.azurewebsites.net//Logout' for the Logout URL (Optional)
 1. Click Save
-
 
 ## To test:
 
