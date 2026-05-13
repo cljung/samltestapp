@@ -19,7 +19,11 @@
         <small id="emailHelp" class="form-text text-muted">The URL to the metadata for the SAML Identity Provider.</small>
         <div class="text-danger">@Html.ValidationMessageFor(m => m.MetadataURL)</div>
     </div>
-    <p>Quick test for IDP initiated SSO flow is to use this app's own metadata. That way this IDP posts to this SP.</p>
+    <p>
+        You can test IDP Initiated SSO via adding your test user to the Enterprise App and then use <a href="https://myapps.microsoft.com" target="_blank">MyApps</a> to initiate the sign-in.
+        <br/>
+        Quick test for IDP initiated SSO flow is to use this app's own metadata. That way this IDP posts to this SP.
+    </p>
     <input id="Button1" type="submit" value="Login" class="btn btn-primary" />
 }
 

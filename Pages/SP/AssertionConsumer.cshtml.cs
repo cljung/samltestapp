@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace SAMLTest.Pages.SP;
 
@@ -75,11 +76,17 @@ public class AssertionConsumerModel : PageModel
         this.SAMLResponse = sml;
         this.SessionId = root.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AuthnStatement/@SessionIndex", nsmgr).Value;
         this.NameId = root.SelectSingleNode("/samlp:Response/saml:Assertion/saml:Subject/saml:NameID", nsmgr).InnerText;
-        string ID = root.SelectSingleNode("/samlp:Response/@InResponseTo", nsmgr).Value;
-        if ( _cache.TryGetValue(ID, out string request) ) {
-            _cache.Remove(ID);
+        // For IDP Initiated SSO, InResponseTo doesn't exist
+        var nodeInResponseTo = root.SelectSingleNode("/samlp:Response/@InResponseTo", nsmgr);
+        if (null != nodeInResponseTo) {
+            string ID = nodeInResponseTo.Value;
+            if (_cache.TryGetValue(ID, out string request)) {
+                _cache.Remove(ID);
+            }
+            this.SAMLRequest = request;
+        } else {
+            this.SAMLRequest = string.Empty;
         }
-        this.SAMLRequest = request;
         return Page();
         
     }

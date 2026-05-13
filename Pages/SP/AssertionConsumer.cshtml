@@ -32,10 +32,12 @@
     </table>
 </div>
 
+@if (!string.IsNullOrEmpty(Model.SAMLRequest) ) {
 <a class="btn btn-link" data-toggle="collapse" href="#rawSAMLRequest" role="link" aria-expanded="false" aria-controls="rawSAML">Show raw SAMLRequest</a>
 <p class="collapse" id="rawSAMLRequest" name="rawSAMLRequest" rows="20" cols="200">
     @Model.SAMLRequest
-</p>
+</p>    
+}
 <a class="btn btn-link" data-toggle="collapse" href="#rawSAMLResponse" role="link" aria-expanded="false" aria-controls="rawSAML">Show raw SAMLResponse</a>
 <p class="collapse" id="rawSAMLResponse" name="rawSAMLResponse" rows="20" cols="200">
     @Model.SAMLResponse
