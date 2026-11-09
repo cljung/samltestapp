@@ -13,6 +13,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 
 namespace SAMLTest.Pages.SP;
 
@@ -59,6 +62,12 @@ public class AssertionConsumerModel : PageModel
             return Redirect("/Error?ErrorMessage=" + statusMessage);
         }
 
+        string oid = string.Empty;
+        string tid = string.Empty;
+        string userId = string.Empty;
+        string displayName = string.Empty;        
+        string[] groups = null;
+
         XmlNodeList nodes = root.SelectNodes("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute", nsmgr); 
         this.attrsandvals = new Dictionary<string, string>();
         foreach (XmlNode node in nodes) {
@@ -71,6 +80,23 @@ public class AssertionConsumerModel : PageModel
                 val = node.InnerText;
             }
             this.attrsandvals.Add(attrname, val);
+            switch( attrname ) {
+                case "http://schemas.microsoft.com/identity/claims/objectidentifier":
+                    oid = val;
+                    break;
+                case "http://schemas.microsoft.com/identity/claims/tenantid":
+                    tid = val;
+                    break;
+                case "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name":
+                    userId = val;
+                    break;
+                case "http://schemas.microsoft.com/identity/claims/displayname":
+                    displayName = val;
+                    break;
+                case "http://schemas.microsoft.com/ws/2008/06/identity/claims/groups":
+                    groups = val.Split(", ");
+                    break;
+            }
         }
 
         this.SAMLResponse = sml;
@@ -87,7 +113,34 @@ public class AssertionConsumerModel : PageModel
         } else {
             this.SAMLRequest = string.Empty;
         }
-        return Page();
-        
+        Login( tid, oid, userId, displayName, groups );
+        return Page();        
     }
+
+    public async void Login(string tid, string oid, string userId, string displayName, string[] groups ) {
+        var claims = new List<Claim> {
+            new Claim("tenantId", tid),
+            new Claim(ClaimTypes.NameIdentifier, oid),
+            new Claim(ClaimTypes.Upn, userId),
+            new Claim(ClaimTypes.Email, userId),
+            new Claim(ClaimTypes.Name, displayName),
+            new Claim(ClaimTypes.Role, "User")
+        };
+        if ( null != groups ) {
+            foreach (var group in groups) {
+                claims.Add(new Claim("groups", group));
+                claims.Add(new Claim(ClaimTypes.Role, group));
+            }
+        }
+        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var authProperties = new AuthenticationProperties {
+            IsPersistent = false,
+            ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(20) // Session lifetime
+        };
+        await HttpContext.SignInAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme, 
+            new ClaimsPrincipal(claimsIdentity), 
+            authProperties);
+    }
+
 }

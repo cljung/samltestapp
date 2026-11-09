@@ -76,7 +76,7 @@ public class IndexModel : PageModel {
             acsServiceURL = acs?.Attribute("Location")?.Value;
 
             _cache.Set(entityID, url, TimeSpan.FromMinutes(60));
-        } catch (Exception ex) {
+        } catch {
             return false;
         }
         return true;

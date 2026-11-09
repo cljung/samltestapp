@@ -64,7 +64,7 @@ public class IndexModel : PageModel {
     /// </summary>
     public IActionResult OnPost( string MetadataURL, string Issuer ) {
         if ( !GetSAMLMetadata(MetadataURL, out string idpEntityID, out string ssoURL) ) {
-            return BadRequest("Metadata URL invalid");
+            return BadRequest($"Metadata URL invalid or unreachable: {MetadataURL}");
         }
         SetSessionVariable( "MetadataURL", MetadataURL );
         SetSessionVariable( "Issuer", Issuer );        
@@ -82,19 +82,18 @@ public class IndexModel : PageModel {
         ssoServiceURL = null;
         entityID = null;
 
-        if( !_cache.TryGetValue( url, out string metadata ) ) {
-            HttpClient client = new HttpClient();
-            HttpResponseMessage res = client.GetAsync(url).Result;
-            metadata = res.Content.ReadAsStringAsync().Result;
-            if (!res.IsSuccessStatusCode) {
-                client.Dispose();
-                return false;
-            }
-            client.Dispose();
-            _cache.Set(url, metadata, TimeSpan.FromMinutes(60));
-        }
-
         try {
+            if (!_cache.TryGetValue(url, out string metadata)) {
+                HttpClient client = new HttpClient();
+                HttpResponseMessage res = client.GetAsync(url).Result;
+                metadata = res.Content.ReadAsStringAsync().Result;
+                if (!res.IsSuccessStatusCode) {
+                    client.Dispose();
+                    return false;
+                }
+                client.Dispose();
+                _cache.Set(url, metadata, TimeSpan.FromMinutes(60));
+            }
             XDocument doc = XDocument.Parse(metadata);
             XNamespace md = "urn:oasis:names:tc:SAML:2.0:metadata";
             entityID = doc.Root?.Attribute("entityID")?.Value;
@@ -102,7 +101,7 @@ public class IndexModel : PageModel {
                                 .FirstOrDefault(x => x.Attribute("Binding")?.Value.Contains("HTTP-Redirect") == true)
                                 ?.Attribute("Location")?.Value;
             _cache.Set(entityID, url, TimeSpan.FromMinutes(60));
-        } catch( Exception ex ) {
+        } catch {
             return false;            
         }
         return true;

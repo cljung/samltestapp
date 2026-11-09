@@ -25,6 +25,13 @@ public class Program {
         });
         builder.Services.AddMemoryCache();
 
+        builder.Services.AddAuthentication(options => {
+            options.DefaultScheme = "Cookies";
+            options.DefaultSignInScheme = "Cookies";
+        }).AddCookie("Cookies", options => {
+            options.Cookie.Name = "SAMLTestApp";
+        });
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -45,6 +52,10 @@ public class Program {
         app.UseStaticFiles();
         app.UseRouting();
         app.UseSession();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
         app.MapRazorPages();
 
         app.Run();

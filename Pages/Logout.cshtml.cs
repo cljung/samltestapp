@@ -6,6 +6,8 @@ using SAMLTest.SAMLObjects;
 using System;
 using System.Linq;
 using System.Xml.Linq;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace SAMLTest.Pages;
 
@@ -23,6 +25,7 @@ public class LogoutModel : PageModel {
             if (_cache.TryGetValue(this.HttpContext.Session.Id, out string logoutReq)) {
                 _cache.Remove(this.HttpContext.Session.Id);
                 SAMLLogoutRequest = logoutReq;
+                Logout();
             }
             return Page();
         } else {
@@ -58,10 +61,13 @@ public class LogoutModel : PageModel {
             ssoServiceURL = doc.Descendants(md + "IDPSSODescriptor").Descendants(md + "SingleLogoutService")
                                 .FirstOrDefault(x => x.Attribute("Binding")?.Value.Contains("HTTP-Redirect") == true)
                                 ?.Attribute("Location")?.Value;
-        } catch (Exception ex) {
+        } catch {
             return false;
         }
         return true;
     }
-
+    private async void Logout() {
+        // Destroys the specific cookie authentication scheme
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    }
 }
